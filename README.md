@@ -4,6 +4,8 @@
 
 **Entrega 1:** diagramas de arquitectura de la API Festivos (Express JS + MongoDB).
 
+**Entrega 3:** implementación de la API Festivos.
+
 ## Integrantes
 
 | Nombre | Correo |
@@ -30,6 +32,9 @@ festivos móviles se calculan en tiempo real a partir del Domingo de Pascua de c
 | PUT | `/api/festivos/:id` | Modifica un festivo |
 | DELETE | `/api/festivos/:id` | Elimina un festivo |
 
+En `PUT` y `DELETE`, el `:id` es el nombre del festivo (por ejemplo `Navidad`), porque los festivos
+están embebidos en cada tipo sin un identificador propio.
+
 ### Tipos de festivo
 
 | id | Tipo | Cálculo de la fecha |
@@ -38,6 +43,20 @@ festivos móviles se calculan en tiempo real a partir del Domingo de Pascua de c
 | 2 | Ley de Puente festivo | Día y mes fijos, trasladado al siguiente lunes |
 | 3 | Basado en el domingo de Pascua | Domingo de Pascua + días de Pascua |
 | 4 | Basado en el domingo de Pascua y Ley de Puente festivo | Domingo de Pascua + días de Pascua, trasladado al siguiente lunes |
+
+## Ejecución
+
+Requisitos: Node.js 20+ y MongoDB con `mongosh`.
+
+```bash
+npm install
+cp .env.example .env      # MONGO_URI y PORT (incluir usuario y clave si MongoDB tiene autenticación)
+npm run seed              # carga seeds/BDFestivos.mjs
+npm start                 # http://localhost:8080
+npm test
+```
+
+La documentación Swagger queda en `http://localhost:8080/api-docs`.
 
 ## Diagramas
 
