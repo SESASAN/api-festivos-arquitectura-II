@@ -53,6 +53,15 @@ async function listar(req, res) {
   res.json(await festivoRepositorio.listar());
 }
 
+async function obtener(req, res) {
+  const nombre = req.params.id;
+  const festivo = await festivoRepositorio.buscarPorNombre(nombre);
+  if (!festivo) {
+    return res.status(404).json({ mensaje: `No existe el festivo '${nombre}'` });
+  }
+  res.json(festivo);
+}
+
 function datosParaGuardar(tipoId, { nombre, dia, mes, diasPascua }) {
   const nombreLimpio = nombre.trim();
   if (tipoId === 1 || tipoId === 2) return { dia, mes, nombre: nombreLimpio };
@@ -109,6 +118,7 @@ module.exports = {
   verificar,
   obtenerPorAnio,
   listar,
+  obtener,
   crear,
   modificar,
   eliminar

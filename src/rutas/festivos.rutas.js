@@ -8,6 +8,7 @@ router.get('/verificar/:anio/:mes/:dia', validarFecha, controlador.verificar);
 router.get('/obtener/:anio', validarAnio, controlador.obtenerPorAnio);
 
 router.get('/', controlador.listar);
+router.get('/:id', controlador.obtener);
 router.post('/', validarDatosFestivo, controlador.crear);
 router.put('/:id', validarDatosFestivo, controlador.modificar);
 router.delete('/:id', controlador.eliminar);

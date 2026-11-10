@@ -95,6 +95,18 @@ module.exports = {
       }
     },
     '/api/festivos/{id}': {
+      get: {
+        tags: ['Festivos'],
+        summary: 'Obtiene un festivo',
+        parameters: [parametroTexto('id', 'Nombre del festivo, por ejemplo "Navidad"')],
+        responses: {
+          200: {
+            description: 'Festivo encontrado',
+            content: { 'application/json': { schema: { $ref: '#/components/schemas/FestivoGuardado' } } }
+          },
+          404: respuestaMensaje('El festivo no existe')
+        }
+      },
       put: {
         tags: ['Festivos'],
         summary: 'Modifica un festivo',
