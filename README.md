@@ -28,11 +28,12 @@ festivos móviles se calculan en tiempo real a partir del Domingo de Pascua de c
 | GET | `/api/festivos/verificar/:anio/:mes/:dia` | Responde `Es Festivo`, `No es festivo` o `Fecha No valida` |
 | GET | `/api/festivos/obtener/:anio` | Lista los festivos de un año en fecha concreta |
 | GET | `/api/festivos` | Lista los festivos registrados con su tipo |
+| GET | `/api/festivos/:id` | Obtiene un festivo |
 | POST | `/api/festivos` | Agrega un festivo a un tipo existente |
 | PUT | `/api/festivos/:id` | Modifica un festivo |
 | DELETE | `/api/festivos/:id` | Elimina un festivo |
 
-En `PUT` y `DELETE`, el `:id` es el nombre del festivo (por ejemplo `Navidad`), porque los festivos
+En `GET /:id`, `PUT` y `DELETE`, el `:id` es el nombre del festivo (por ejemplo `Navidad`), porque los festivos
 están embebidos en cada tipo sin un identificador propio.
 
 ### Tipos de festivo
@@ -46,17 +47,67 @@ están embebidos en cada tipo sin un identificador propio.
 
 ## Ejecución
 
-Requisitos: Node.js 20+ y MongoDB con `mongosh`.
+### Requisitos
+
+| Software | Versión | Linux | macOS | Windows |
+|---|---|---|---|---|
+| Node.js | 20 o superior | `nvm install --lts` o el gestor de paquetes | `brew install node` | `winget install OpenJS.NodeJS.LTS` |
+| MongoDB | 7 o superior | [guía oficial](https://www.mongodb.com/docs/manual/administration/install-on-linux/) | `brew tap mongodb/brew && brew install mongodb-community` | `winget install MongoDB.Server` |
+| mongosh | cualquiera | [guía oficial](https://www.mongodb.com/docs/mongodb-shell/install/) | `brew install mongosh` | `winget install MongoDB.Shell` |
+
+Comprobar la instalación:
+
+```bash
+node -v
+mongosh --version
+```
+
+### Configuración
+
+Copiar `.env.example` como `.env` y ajustar los valores:
+
+| Variable | Descripción | Ejemplo |
+|---|---|---|
+| `MONGO_URI` | Conexión a MongoDB | `mongodb://localhost:27017/festivos` (sin autenticación) |
+| | | `mongodb://usuario:clave@localhost:27017/festivos?authSource=admin` (con autenticación) |
+| `PORT` | Puerto de la API | `8080` |
+
+Si la clave de MongoDB tiene caracteres especiales, se escriben codificados en la URI: `%` → `%25`,
+`#` → `%23`, `@` → `%40`, `:` → `%3A`, `/` → `%2F`.
+
+Si el puerto 8080 ya está en uso, cambiar `PORT` (por ejemplo `3000`) y arrancar la API Calendario con
+`FESTIVOS_API_URL=http://localhost:3000`.
+
+### Linux / macOS
 
 ```bash
 npm install
-cp .env.example .env      # MONGO_URI y PORT (incluir usuario y clave si MongoDB tiene autenticación)
-npm run seed              # carga seeds/BDFestivos.mjs
-npm start                 # http://localhost:8080
+cp .env.example .env
+mongosh "mongodb://localhost:27017" < seeds/BDFestivos.mjs
+npm start
 npm test
 ```
 
-La documentación Swagger queda en `http://localhost:8080/api-docs`.
+### Windows (PowerShell)
+
+```powershell
+npm install
+Copy-Item .env.example .env
+Get-Content seeds\BDFestivos.mjs | mongosh "mongodb://localhost:27017"
+npm start
+npm test
+```
+
+Si MongoDB tiene autenticación, la carga de datos usa la misma URI con usuario (pide la clave):
+`mongosh "mongodb://usuario@localhost:27017/?authSource=admin"`.
+
+La API queda en `http://localhost:8080` y la documentación Swagger en `http://localhost:8080/api-docs`.
+
+Prueba rápida (debe devolver 19 festivos para 2023):
+
+```bash
+curl http://localhost:8080/api/festivos/obtener/2023
+```
 
 ## Diagramas
 
